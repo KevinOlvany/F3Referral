@@ -362,3 +362,65 @@ For issues or questions:
 **Last Updated**: December 2, 2025
 **Version**: 2.0
 **Maintainer**: F3 Susquehanna Valley
+
+
+# NFC Tools – Instruction Guide
+
+## Overview
+This guide explains how to use the **NFC Tools** mobile application to read, write, and program NFC tags on both **Android** and **iOS**.
+
+If you need NFC tags, you can purchase them here:  
+  https://www.amazon.com/dp/B0CJJ1JGLW?ref=nb_sb_ss_w_as-reorder_k0_1_3&amp=&crid=72RPJ6PZMFGT&amp=&sprefix=nfc
+
+---
+
+## Requirements
+- A smartphone with **NFC capability**  
+- The **NFC Tools** app (iOS / Android)  
+- One or more **blank NFC tags**  
+- *(Optional)* **NFC Tools Pro** for advanced automation features
+
+---
+
+## Installing the App
+1. Open the **Google Play Store** or **Apple App Store**.  
+2. Search for **“NFC Tools”** by Wakdev.  
+3. Install the app.
+
+---
+
+### Writing Data to an NFC Tag
+1. Go to the **Write** tab.  
+2. Tap **Add a record**.  
+3. Select the type of data to write:
+   - URL  (https://f3susquehannavalley.com/referral/aboutf3.html?ref=spielberg)
+4. After selecting your record, tap **Write**.  
+5. Bring your phone close to the NFC tag to write the data.
+
+---
+
+### Erasing or Formatting an NFC Tag
+1. Open the **Other** tab.  
+2. Choose **Erase tag** or **Format tag**.  
+3. Hold your phone near the tag.  
+4. Confirm the action.
+
+---
+
+##  Design 
+- You can design these however you want. We use custom F3 stickers we bought from VistaPrint.
+- The sticers were the most expensive part of this project.
+
+---
+
+## Troubleshooting
+
+### Tag Not Detected?
+- Ensure NFC is **enabled** in device settings.  
+- Move the tag around the back of your phone—antenna placement differs by model.  
+- Try another NFC tag to rule out a defective one.
+
+### Write Errors?
+- Make sure the tag is **rewritable**, not locked/read-only.  
+- Some tag types (e.g., certain MIFARE cards) have limited compatibility.
+
