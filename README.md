@@ -119,7 +119,7 @@ referrals/{userId} {
 - Responsive mobile-friendly design
 - Grey gradient theme
 
-## 🚀 Setup & Deployment
+## Setup & Deployment
 
 ### Prerequisites
 - Firebase project configured
@@ -218,7 +218,7 @@ Edit `counter.js`:
 - Interactive charts with Chart.js
 - Smooth animations and transitions
 
-## 🔒 Security Considerations
+## Security Considerations
 
 ### Client-Side Tracking
 - localStorage can be cleared by users
@@ -310,7 +310,7 @@ Monitor performance with:
 - Tier system (Bronze/Silver/Gold members)
 - Public recognition in Slack
 
-## 📞 Integration Points
+## Integration Points
 
 ### Website Integration
 ```html
