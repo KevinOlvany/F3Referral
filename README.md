@@ -4,7 +4,7 @@
 
 This folder contains the referral tracking and competition system for F3 Susquehanna Valley. The system allows members to share referral links, tracks who brings in new visitors, and displays competitive leaderboards to encourage member engagement.
 
-## 📁 Folder Contents
+## Folder Contents
 
 ### Files
 
@@ -16,7 +16,7 @@ This folder contains the referral tracking and competition system for F3 Susqueh
 | `counter.js` | Referral tracking script that logs visits to Firebase |
 
 
-## 🔗 How the Referral System Works
+## How the Referral System Works
 
 ### 1. Member Shares Link
 Members share personalized referral links with potential new members:
