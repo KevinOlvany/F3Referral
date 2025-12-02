@@ -1,0 +1,912 @@
+
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Referral Competition</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="config.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f4f4f4; 
+      padding: 10px; 
+      color: #333; 
+      margin: 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 { 
+      text-align: center; 
+      margin-bottom: 20px; 
+      font-size: 1.8em;
+      padding: 0 10px;
+    }
+    h2 { 
+      text-align: center; 
+      margin-bottom: 20px; 
+      font-size: 1.5em;
+    }
+    h3 {
+      font-size: 1.2em;
+    }
+    .section { 
+      margin-bottom: 30px; 
+      background: white; 
+      padding: 15px; 
+      border-radius: 10px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    .winner-banner { 
+      background: linear-gradient(135deg, #6b7280 0%, #374151 100%); 
+      color: white; 
+      padding: 20px; 
+      border-radius: 10px; 
+      text-align: center; 
+      margin-bottom: 30px; 
+    }
+    .winner-banner h2 { 
+      color: white; 
+      margin: 0; 
+      font-size: 1.5em; 
+    }
+    .winner-banner p { 
+      font-size: 1em; 
+      margin: 10px 0 0 0; 
+      word-break: break-word;
+    }
+    .podium { 
+      display: flex; 
+      justify-content: center; 
+      gap: 15px; 
+      margin-bottom: 30px; 
+      flex-wrap: wrap; 
+    }
+    .place { 
+      text-align: center; 
+      padding: 15px; 
+      border-radius: 10px; 
+      color: white; 
+      width: 140px; 
+      min-width: 120px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+      flex: 1;
+      max-width: 180px;
+    }
+    .place h2 {
+      font-size: 1.2em;
+      margin: 0 0 10px 0;
+      word-break: break-word;
+    }
+    .place p {
+      font-size: 0.95em;
+      margin: 0;
+    }
+    .gold { background: gold; color: #333; }
+    .silver { background: silver; color: #333; }
+    .bronze { background: #cd7f32; color: #fff; }
+    
+    /* Table Styling */
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      background: white; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+      min-width: 300px;
+    }
+    th, td { 
+      padding: 12px 8px; 
+      border: 1px solid #ccc; 
+      text-align: left; 
+    }
+    th { 
+      background: #eee; 
+      font-size: 0.9em;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    td {
+      font-size: 0.95em;
+    }
+    
+    /* Filter Styling */
+    .filters { 
+      display: flex; 
+      justify-content: center; 
+      align-items: flex-end; 
+      gap: 10px; 
+      margin-bottom: 20px; 
+      flex-wrap: wrap; 
+      background: white; 
+      padding: 15px; 
+      border-radius: 10px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    .filter-group { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 5px; 
+      flex: 1;
+      min-width: 100px;
+    }
+    .filter-group label { 
+      font-weight: bold; 
+      font-size: 0.85em; 
+      color: #666; 
+    }
+    .filter-group select { 
+      padding: 10px 8px; 
+      border: 2px solid #ddd; 
+      border-radius: 5px; 
+      font-size: 0.95em; 
+      cursor: pointer; 
+      width: 100%;
+    }
+    .filter-group select:focus { 
+      outline: none; 
+      border-color: #6b7280; 
+    }
+    button.apply-filter { 
+      padding: 12px 20px; 
+      background: #4b5563; 
+      color: white; 
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      font-size: 0.95em; 
+      font-weight: bold; 
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    button.apply-filter:hover { 
+      background: #374151; 
+    }
+    button.apply-filter:active {
+      transform: scale(0.98);
+    }
+
+    /* Individual Stats Section */
+    .individual-stats {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 3px solid #6b7280;
+    }
+    
+    .stats-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    
+    .name-search {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .name-search input {
+      padding: 10px 15px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+      width: 250px;
+      max-width: 100%;
+    }
+    
+    .name-search input:focus {
+      outline: none;
+      border-color: #6b7280;
+    }
+    
+    .name-search select {
+      padding: 10px 15px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    
+    .name-search button {
+      padding: 10px 20px;
+      background: #4b5563;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+    }
+    
+    .name-search button:hover {
+      background: #374151;
+    }
+    
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .stat-card h3 {
+      margin: 0 0 10px 0;
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+    
+    .stat-card .value {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 0;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin-top: 20px;
+    }
+    
+    #individual-stats-section {
+      display: none;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      
+      h1 { 
+        font-size: 1.5em; 
+        margin-bottom: 15px; 
+      }
+      
+      h2 { 
+        font-size: 1.3em; 
+      }
+      
+      h3 {
+        font-size: 1.1em;
+      }
+      
+      .winner-banner { 
+        padding: 15px; 
+        margin-bottom: 20px; 
+      }
+      
+      .winner-banner h2 { 
+        font-size: 1.3em; 
+      }
+      
+      .winner-banner p { 
+        font-size: 0.9em; 
+      }
+      
+      .section { 
+        padding: 12px; 
+        margin-bottom: 20px; 
+      }
+      
+      .podium { 
+        gap: 10px; 
+        margin-bottom: 20px; 
+      }
+      
+      .place { 
+        width: 100%; 
+        max-width: none;
+        padding: 12px; 
+      }
+      
+      .place h2 {
+        font-size: 1.1em;
+      }
+      
+      .place p {
+        font-size: 0.9em;
+      }
+      
+      .filters { 
+        padding: 12px; 
+        gap: 8px; 
+      }
+      
+      .filter-group {
+        min-width: 80px;
+      }
+      
+      button.apply-filter { 
+        width: 100%; 
+        flex-basis: 100%;
+        padding: 12px; 
+      }
+      
+      th, td { 
+        padding: 8px 6px; 
+        font-size: 0.85em; 
+      }
+      
+      /* Stack filters vertically on very small screens */
+      @media (max-width: 480px) {
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        #month-filters {
+          width: 100%;
+        }
+        
+        #month-filters > div {
+          flex-direction: column;
+          gap: 8px;
+        }
+        
+        .filter-group {
+          width: 100%;
+        }
+      }
+    }
+
+    /* Tablet adjustments */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      body { padding: 15px; }
+      
+      .place { 
+        width: 160px; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Referral Competition Leaderboard</h1>
+  
+  <!-- Last Month's Winner -->
+  <div id='last-month-winner' class='winner-banner' style='display:none;'>
+    <h2>🏆 Last Month's Winner</h2>
+    <p id='last-winner-name'></p>
+  </div>
+
+  <!-- Filters -->
+  <div class='filters'>
+    <div class='filter-group'>
+      <label for='view-type'>View:</label>
+      <select id='view-type' onchange='toggleFilters()'>
+        <option value='monthly'>Monthly</option>
+        <option value='yearly'>Yearly</option>
+        <option value='overall'>All-Time</option>
+      </select>
+    </div>
+    <div id='month-filters'>
+      <div style='display: flex; gap: 15px;'>
+        <div class='filter-group'>
+          <label for='month-select'>Month:</label>
+          <select id='month-select'></select>
+        </div>
+        <div class='filter-group'>
+          <label for='year-select'>Year:</label>
+          <select id='year-select'></select>
+        </div>
+      </div>
+    </div>
+    <div id='year-only-filter' style='display:none;'>
+      <div class='filter-group'>
+        <label for='yearly-select'>Year:</label>
+        <select id='yearly-select'></select>
+      </div>
+    </div>
+    <button class='apply-filter' onclick='applyFilter()'>View Results</button>
+  </div>
+
+  <!-- Results Section -->
+  <div id='results-view' class='section'>
+    <h2 id='results-title'>Top Referrers</h2>
+    <div class='podium' id='results-podium'></div>
+    <h3 style='text-align:center;'>All Participants</h3>
+    <table>
+      <thead><tr><th>Rank</th><th>Name</th><th>Referrals</th></tr></thead>
+      <tbody id='results-tbody'></tbody>
+    </table>
+  </div>
+
+  <!-- Individual Stats Section -->
+  <div class='section individual-stats'>
+    <div class='stats-header'>
+      <h2>Individual Performance Tracker</h2>
+      <p>View detailed metrics and trends for any individual</p>
+    </div>
+    
+    <div class='name-search'>
+      <input type='text' id='name-input' placeholder='Enter name...' list='names-list'>
+      <datalist id='names-list'></datalist>
+      <select id='chart-period'>
+        <option value='daily'>Daily</option>
+        <option value='weekly'>Weekly</option>
+        <option value='monthly'>Monthly</option>
+      </select>
+      <button onclick='loadIndividualStats()'>View Stats</button>
+    </div>
+    
+    <div id='individual-stats-section'>
+      <div class='stats-cards'>
+        <div class='stat-card'>
+          <h3>Total Referrals</h3>
+          <p class='value' id='stat-total'>0</p>
+        </div>
+        <div class='stat-card'>
+          <h3>This Month</h3>
+          <p class='value' id='stat-month'>0</p>
+        </div>
+        <div class='stat-card'>
+          <h3>This Year</h3>
+          <p class='value' id='stat-year'>0</p>
+        </div>
+        <div class='stat-card'>
+          <h3>Average per Month</h3>
+          <p class='value' id='stat-avg'>0</p>
+        </div>
+      </div>
+      
+      <div class='chart-container'>
+        <canvas id='referral-chart'></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let allReferralsData = null; // Cache the data
+    let currentChart = null; // Store chart instance
+
+    // Get all referrals data once
+    async function fetchAllReferrals() {
+      if (allReferralsData) return allReferralsData;
+      
+      const snapshot = await getDocs(collection(db, "referrals"));
+      allReferralsData = [];
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const history = data.history || [];
+        allReferralsData.push({ 
+          name: doc.id, 
+          history: history.map(dateStr => new Date(dateStr)).filter(date => !isNaN(date))
+        });
+      });
+
+      return allReferralsData;
+    }
+
+    // Get available date range from data
+    function getDateRange(data) {
+      let minDate = new Date();
+      let maxDate = new Date(0);
+
+      data.forEach(user => {
+        user.history.forEach(date => {
+          if (date < minDate) minDate = date;
+          if (date > maxDate) maxDate = date;
+        });
+      });
+
+      return { minDate, maxDate };
+    }
+
+    // Populate month and year dropdowns
+    function populateFilters(data) {
+      const { minDate, maxDate } = getDateRange(data);
+      const monthSelect = document.getElementById('month-select');
+      const yearSelect = document.getElementById('year-select');
+      const yearlySelect = document.getElementById('yearly-select');
+      
+      // Populate months
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+      monthSelect.innerHTML = '';
+      months.forEach((month, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+      });
+
+      // Populate years
+      yearSelect.innerHTML = '';
+      yearlySelect.innerHTML = '';
+      const minYear = minDate.getFullYear();
+      const maxYear = maxDate.getFullYear();
+      for (let year = maxYear; year >= minYear; year--) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+        
+        const option2 = document.createElement('option');
+        option2.value = year;
+        option2.textContent = year;
+        yearlySelect.appendChild(option2);
+      }
+
+      // Set to current month/year
+      const now = new Date();
+      monthSelect.value = now.getMonth();
+      yearSelect.value = now.getFullYear();
+      yearlySelect.value = now.getFullYear();
+      
+      // Populate name list for individual stats
+      const namesList = document.getElementById('names-list');
+      namesList.innerHTML = '';
+      data.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.name;
+        namesList.appendChild(option);
+      });
+    }
+
+    // Get referrals for a specific month
+    function getMonthlyReferrals(data, year, month) {
+      const referralCounts = [];
+
+      data.forEach(user => {
+        const monthlyDates = user.history
+          .filter(date => date.getFullYear() === year && date.getMonth() === month)
+          .sort((a, b) => a - b);
+
+        const count = monthlyDates.length;
+        const firstReferralDate = monthlyDates[0] || new Date(8640000000000000);
+
+        referralCounts.push({ name: user.name, count, firstReferralDate });
+      });
+
+      referralCounts.sort((a, b) => {
+        if (b.count !== a.count) {
+          return b.count - a.count;
+        }
+        return a.firstReferralDate - b.firstReferralDate;
+      });
+
+      return referralCounts;
+    }
+
+    // Get referrals for a specific year
+    function getYearlyReferrals(data, year) {
+      const referralCounts = [];
+
+      data.forEach(user => {
+        const yearlyDates = user.history
+          .filter(date => date.getFullYear() === year);
+
+        const count = yearlyDates.length;
+        referralCounts.push({ name: user.name, count });
+      });
+
+      referralCounts.sort((a, b) => b.count - a.count);
+      return referralCounts;
+    }
+
+    // Get all-time referral counts
+    function getAllTimeReferrals(data) {
+      const referralCounts = data.map(user => ({
+        name: user.name,
+        count: user.history.length
+      }));
+
+      referralCounts.sort((a, b) => b.count - a.count);
+      return referralCounts;
+    }
+
+    function renderLeaderboard(referralCounts) {
+      const podium = document.getElementById('results-podium');
+      const tableBody = document.getElementById('results-tbody');
+      
+      podium.innerHTML = '';
+      tableBody.innerHTML = '';
+
+      const top3 = referralCounts.slice(0, 3).filter(user => user.count > 0);
+      const others = referralCounts.slice(3).filter(user => user.count > 0);
+
+      const places = ["gold", "silver", "bronze"];
+      top3.forEach((user, i) => {
+        const div = document.createElement("div");
+        div.className = `place ${places[i]}`;
+        div.innerHTML = `<h2>${user.name}</h2><p>${user.count} referral${user.count !== 1 ? 's' : ''}</p>`;
+        podium.appendChild(div);
+      });
+
+      others.forEach((user, i) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${i + 4}</td><td>${user.name}</td><td>${user.count}</td>`;
+        tableBody.appendChild(row);
+      });
+
+      if (top3.length === 0 && others.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">No referrals found for this period</td></tr>';
+      }
+    }
+
+    // Show last month's winner
+    async function showLastMonthWinner(data) {
+      const now = new Date();
+      let lastMonth = now.getMonth() - 1;
+      let lastYear = now.getFullYear();
+      
+      if (lastMonth < 0) {
+        lastMonth = 11;
+        lastYear--;
+      }
+
+      const lastMonthData = getMonthlyReferrals(data, lastYear, lastMonth);
+      const winner = lastMonthData[0];
+
+      if (winner && winner.count > 0) {
+        const monthName = new Date(lastYear, lastMonth).toLocaleString("default", { month: "long", year: "numeric" });
+        document.getElementById('last-winner-name').textContent = 
+          `${winner.name} - ${winner.count} referral${winner.count !== 1 ? 's' : ''} in ${monthName}`;
+        document.getElementById('last-month-winner').style.display = 'block';
+      }
+    }
+
+    // Toggle month/year filters visibility
+    window.toggleFilters = function() {
+      const viewType = document.getElementById('view-type').value;
+      const monthFilters = document.getElementById('month-filters');
+      const yearOnlyFilter = document.getElementById('year-only-filter');
+      
+      monthFilters.style.display = 'none';
+      yearOnlyFilter.style.display = 'none';
+      
+      if (viewType === 'monthly') {
+        monthFilters.style.display = 'block';
+      } else if (viewType === 'yearly') {
+        yearOnlyFilter.style.display = 'block';
+      }
+    }
+
+    // Apply filter and show results
+    window.applyFilter = async function() {
+      const viewType = document.getElementById('view-type').value;
+      const data = await fetchAllReferrals();
+      
+      let results;
+      let title;
+
+      if (viewType === 'monthly') {
+        const month = parseInt(document.getElementById('month-select').value);
+        const year = parseInt(document.getElementById('year-select').value);
+        const monthName = new Date(year, month).toLocaleString("default", { month: "long", year: "numeric" });
+        
+        results = getMonthlyReferrals(data, year, month);
+        title = `Top Referrers - ${monthName}`;
+      } else if (viewType === 'yearly') {
+        const year = parseInt(document.getElementById('yearly-select').value);
+        results = getYearlyReferrals(data, year);
+        title = `Top Referrers - ${year}`;
+      } else {
+        results = getAllTimeReferrals(data);
+        title = 'All-Time Referral Leaders';
+      }
+
+      document.getElementById('results-title').textContent = title;
+      renderLeaderboard(results);
+    }
+
+    // Individual Stats Functions
+    window.loadIndividualStats = async function() {
+      const name = document.getElementById('name-input').value.trim();
+      if (!name) {
+        alert('Please enter a name');
+        return;
+      }
+
+      const data = await fetchAllReferrals();
+      const user = data.find(u => u.name.toLowerCase() === name.toLowerCase());
+
+      if (!user) {
+        alert('Name not found');
+        return;
+      }
+
+      document.getElementById('individual-stats-section').style.display = 'block';
+
+      // Calculate stats
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+
+      const totalReferrals = user.history.length;
+      const thisMonthReferrals = user.history.filter(date => 
+        date.getFullYear() === currentYear && date.getMonth() === currentMonth
+      ).length;
+      const thisYearReferrals = user.history.filter(date => 
+        date.getFullYear() === currentYear
+      ).length;
+
+      // Calculate average per month
+      const sortedDates = [...user.history].sort((a, b) => a - b);
+      let avgPerMonth = 0;
+      if (sortedDates.length > 0) {
+        const firstDate = sortedDates[0];
+        const lastDate = sortedDates[sortedDates.length - 1];
+        const monthsDiff = (lastDate.getFullYear() - firstDate.getFullYear()) * 12 + 
+                          (lastDate.getMonth() - firstDate.getMonth()) + 1;
+        avgPerMonth = (totalReferrals / monthsDiff).toFixed(1);
+      }
+
+      // Update stat cards
+      document.getElementById('stat-total').textContent = totalReferrals;
+      document.getElementById('stat-month').textContent = thisMonthReferrals;
+      document.getElementById('stat-year').textContent = thisYearReferrals;
+      document.getElementById('stat-avg').textContent = avgPerMonth;
+
+      // Render chart
+      renderChart(user);
+    }
+
+    function renderChart(user) {
+      const period = document.getElementById('chart-period').value;
+      const ctx = document.getElementById('referral-chart').getContext('2d');
+
+      // Destroy existing chart
+      if (currentChart) {
+        currentChart.destroy();
+      }
+
+      let chartData;
+      let chartLabels;
+
+      if (period === 'daily') {
+        ({ labels: chartLabels, data: chartData } = aggregateByDay(user.history));
+      } else if (period === 'weekly') {
+        ({ labels: chartLabels, data: chartData } = aggregateByWeek(user.history));
+      } else {
+        ({ labels: chartLabels, data: chartData } = aggregateByMonth(user.history));
+      }
+
+      currentChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            label: 'Referrals',
+            data: chartData,
+            borderColor: '#6b7280',
+            backgroundColor: 'rgba(107, 114, 128, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: `${user.name}'s Referral Trend (${period.charAt(0).toUpperCase() + period.slice(1)})`
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function aggregateByDay(dates) {
+      if (dates.length === 0) return { labels: [], data: [] };
+
+      const sortedDates = [...dates].sort((a, b) => a - b);
+      const firstDate = new Date(sortedDates[0]);
+      const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+
+      // Limit to last 90 days if range is too large
+      const daysDiff = Math.ceil((lastDate - firstDate) / (1000 * 60 * 60 * 24));
+      const startDate = daysDiff > 90 ? new Date(lastDate.getTime() - 90 * 24 * 60 * 60 * 1000) : firstDate;
+
+      const labels = [];
+      const data = [];
+      const countMap = {};
+
+      sortedDates.forEach(date => {
+        const dateStr = date.toISOString().split('T')[0];
+        countMap[dateStr] = (countMap[dateStr] || 0) + 1;
+      });
+
+      for (let d = new Date(startDate); d <= lastDate; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split('T')[0];
+        labels.push(dateStr);
+        data.push(countMap[dateStr] || 0);
+      }
+
+      return { labels, data };
+    }
+
+    function aggregateByWeek(dates) {
+      if (dates.length === 0) return { labels: [], data: [] };
+
+      const sortedDates = [...dates].sort((a, b) => a - b);
+      const countMap = {};
+
+      sortedDates.forEach(date => {
+        const weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - date.getDay());
+        const weekStr = weekStart.toISOString().split('T')[0];
+        countMap[weekStr] = (countMap[weekStr] || 0) + 1;
+      });
+
+      const labels = Object.keys(countMap).sort();
+      const data = labels.map(label => countMap[label]);
+
+      return { labels, data };
+    }
+
+    function aggregateByMonth(dates) {
+      if (dates.length === 0) return { labels: [], data: [] };
+
+      const countMap = {};
+
+      dates.forEach(date => {
+        const monthStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        countMap[monthStr] = (countMap[monthStr] || 0) + 1;
+      });
+
+      const labels = Object.keys(countMap).sort();
+      const data = labels.map(label => countMap[label]);
+
+      // Format labels as "Jan 2024"
+      const formattedLabels = labels.map(label => {
+        const [year, month] = label.split('-');
+        const date = new Date(year, parseInt(month) - 1);
+        return date.toLocaleString('default', { month: 'short', year: 'numeric' });
+      });
+
+      return { labels: formattedLabels, data };
+    }
+
+    // Initialize the page
+    async function init() {
+      const data = await fetchAllReferrals();
+      
+      // Populate filters
+      populateFilters(data);
+
+      // Show last month's winner
+      await showLastMonthWinner(data);
+
+      // Load current month data by default
+      applyFilter();
+    }
+
+    init();
+
+
+  </script>
+</body>
+</html>

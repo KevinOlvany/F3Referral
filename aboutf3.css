@@ -1,0 +1,142 @@
+:root {
+  --bg: #2a2a2e;
+  --primary: #d83526;
+  --accent: #ffcb05;
+  --text: #ededed;
+  --white: #ffffff;
+  --header-bg: #2a2a2e;
+  --card-bg: #2a2a2e;
+  --card-text: var(--text);
+  --hero1: var(--primary);
+  --hero2: var(--accent);
+  --hero3: #f5e663;
+  --text-light: var(--white);
+  --text-hover: var(--bg);
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background: #121217;
+  color: var(--card-text);
+  margin: 0;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Section Cards */
+section {
+  background-color: var(--card-bg);
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 900px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+section h2 {
+  font-size: 1.8rem;
+  color: var(--hero1);
+  margin-bottom: 1rem;
+}
+
+section p,
+section li {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+ul {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+ul li {
+  margin-bottom: 0.75rem;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+ul li::before {
+  content: "✔️";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--hero2);
+}
+
+/* CTA Button */
+.cta {
+  display: inline-block;
+  align-items: center;
+
+  padding: 0.75rem;
+  background: var(--hero2);
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.cta:hover {
+  background: var(--hero3);
+  color: var(--text-hover);
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+section::before {
+  width: 100px;
+  height: 100px;
+  top: -40px;
+  left: -40px;
+}
+
+section::after {
+  width: 80px;
+  height: 80px;
+  bottom: -30px;
+  right: -30px;
+}
+.header-container {
+  display: flex;
+  flex-direction: column; /* stack logo + nav */
+  justify-content: center; /* center vertically */
+  align-items: center;     /* center horizontally */
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+  background-color: rgba(255, 203, 5, 0.02); 
+}
+
+.footer-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+.CTA-box{
+    text-align: center;
+}
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+align-items: center;
+}
